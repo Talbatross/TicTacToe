@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CoverageReport scope="Summary">
+  <Summary>
+    <Generatedon>7/14/2022 - 12:01:52 AM</Generatedon>
+    <Parser>OpenCoverParser</Parser>
+    <Assemblies>1</Assemblies>
+    <Classes>2</Classes>
+    <Files>2</Files>
+    <Coveredlines>116</Coveredlines>
+    <Uncoveredlines>16</Uncoveredlines>
+    <Coverablelines>132</Coverablelines>
+    <Totallines>218</Totallines>
+    <Linecoverage>87.8</Linecoverage>
+    <Coveredbranches>0</Coveredbranches>
+    <Totalbranches>0</Totalbranches>
+  </Summary>
+  <Coverage>
+    <Assembly name="TicTacToe" classes="2" coverage="87.8" coveredlines="116" coverablelines="132" totallines="218" branchcoverage="" coveredbranches="0" totalbranches="0">
+      <Class name="Bootstrap" coverage="0" coveredlines="0" coverablelines="3" totallines="13" branchcoverage="" coveredbranches="0" totalbranches="0" />
+      <Class name="Game" coverage="89.9" coveredlines="116" coverablelines="129" totallines="205" branchcoverage="" coveredbranches="0" totalbranches="0" />
+    </Assembly>
+  </Coverage>
+</CoverageReport>
