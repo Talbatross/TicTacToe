@@ -5,9 +5,13 @@ public class Bootstrap : MonoBehaviour
     private Game ticTacToe;
     private void Start()
     {
-        ticTacToe = new Game();
+        Team firstPlayer = ChooseFirstPlayer();
+        ticTacToe = new Game(firstPlayer);
     }
-
+    private Team ChooseFirstPlayer()
+    {
+        return (Team)Random.Range(1, 3);
+    }
     
 }
 

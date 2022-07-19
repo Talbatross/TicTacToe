@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CoverageReport scope="Summary">
   <Summary>
-    <Generatedon>7/14/2022 - 12:01:52 AM</Generatedon>
+    <Generatedon>7/18/2022 - 11:48:23 PM</Generatedon>
     <Parser>OpenCoverParser</Parser>
     <Assemblies>1</Assemblies>
-    <Classes>2</Classes>
-    <Files>2</Files>
-    <Coveredlines>116</Coveredlines>
-    <Uncoveredlines>16</Uncoveredlines>
-    <Coverablelines>132</Coverablelines>
-    <Totallines>218</Totallines>
-    <Linecoverage>87.8</Linecoverage>
+    <Classes>4</Classes>
+    <Files>4</Files>
+    <Coveredlines>203</Coveredlines>
+    <Uncoveredlines>7</Uncoveredlines>
+    <Coverablelines>210</Coverablelines>
+    <Totallines>338</Totallines>
+    <Linecoverage>96.6</Linecoverage>
     <Coveredbranches>0</Coveredbranches>
     <Totalbranches>0</Totalbranches>
   </Summary>
   <Coverage>
-    <Assembly name="TicTacToe" classes="2" coverage="87.8" coveredlines="116" coverablelines="132" totallines="218" branchcoverage="" coveredbranches="0" totalbranches="0">
-      <Class name="Bootstrap" coverage="0" coveredlines="0" coverablelines="3" totallines="13" branchcoverage="" coveredbranches="0" totalbranches="0" />
-      <Class name="Game" coverage="89.9" coveredlines="116" coverablelines="129" totallines="205" branchcoverage="" coveredbranches="0" totalbranches="0" />
+    <Assembly name="TicTacToe" classes="4" coverage="96.6" coveredlines="203" coverablelines="210" totallines="338" branchcoverage="" coveredbranches="0" totalbranches="0">
+      <Class name="AIPlayer" coverage="100" coveredlines="83" coverablelines="83" totallines="125" branchcoverage="" coveredbranches="0" totalbranches="0" />
+      <Class name="Bootstrap" coverage="0" coveredlines="0" coverablelines="7" totallines="20" branchcoverage="" coveredbranches="0" totalbranches="0" />
+      <Class name="Check" coverage="100" coveredlines="85" coverablelines="85" totallines="120" branchcoverage="" coveredbranches="0" totalbranches="0" />
+      <Class name="Game" coverage="100" coveredlines="35" coverablelines="35" totallines="73" branchcoverage="" coveredbranches="0" totalbranches="0" />
     </Assembly>
   </Coverage>
 </CoverageReport>
