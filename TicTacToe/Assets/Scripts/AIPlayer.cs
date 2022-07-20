@@ -4,7 +4,7 @@ using UnityEngine;
 public class AIPlayer : IPlayer
 {
     private readonly Action<int, int> _placeMarker;
-    private Team[,] _board; // TODO: Make this a board object
+    private Team[,] _board;
     private readonly Team _team;
     private readonly Team _opponent;
     private readonly BestMove _bestMove = new ();
