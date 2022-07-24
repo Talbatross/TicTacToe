@@ -1,55 +1,32 @@
 ﻿using System;
-using UnityEngine;
-
-public enum Team
-{
-    None = 0,
-    X = 1,
-    O = 2
-}
-
-public interface IPlayer
-{
-    void OnPlayerTurn(IReadOnlyBoard board);
-    Action<int,int> PlaceMarker { get; set; }
-}
+using System.Collections;
 
 public class Game
 {
     private readonly Board _board;
-    private readonly Action<int, int, Team> _updateSquare;
-
     private Action<Board> _onPlayerXTurn;
     private Action<Board> _onPlayerOTurn;
-    private readonly Action _onWinner;
-    private readonly Action _onTie;
     private Team _currentTeam;
+    private readonly IEventHandler _eventHandler;
+    private bool _valid = true;
+    private bool _executing;
+
 
     public Game(
         Team firstPlayer,
         Board board,
-        Action<int,int,Team> updateSquare,
-        Action onWinner,
-        Action onTie)
+        IEventHandler eventHandler)
     {
         _board = board;
         _currentTeam = firstPlayer;
-        _updateSquare = updateSquare;
-        _onWinner = onWinner;
-        _onTie = onTie;
+        _eventHandler = eventHandler;
     }
 
-    public void SetCurrentTeam(Team currentTeam)
+    public void Clear()
     {
-        _currentTeam = currentTeam;
+        _executing = false;
     }
-
-    public void HookupPlayers(Action<Board> onXTurn, Action<Board> onOTurn)
-    {
-        _onPlayerXTurn = onXTurn;
-        _onPlayerOTurn = onOTurn;
-    }
-
+    
     public void TriggerPlayerTurn()
     {
         if (_currentTeam == Team.O)
@@ -61,67 +38,79 @@ public class Game
             _onPlayerXTurn(_board);
         }
     }
-    
-    public void PlaceMarker(int row, int column)
+
+    public IEnumerator PlaceMarker(int row, int column)
     {
-        if (CanMove(row,column) == false)
+        if (_executing)
         {
-            return;
+            yield break;
         }
-        UpdateSquare(row,column);
-        if (GameCompleted())
+
+        _executing = true;
+        _valid = true;
+        yield return CanMove(row, column);
+        if (!_valid)
         {
-            return;
+            _executing = false;
+            yield break;
         }
-        PrepareNextTurn();
+        yield return UpdateSquare(row, column);
+        yield return GameCompleted();
+    }
+
+    public void HookupPlayers(Action<Board> onXTurn, Action<Board> onOTurn)
+    {
+        _onPlayerXTurn = onXTurn;
+        _onPlayerOTurn = onOTurn;
     }
     
-    private bool CanMove(int row, int column)
+    public void SetCurrentTeam(Team currentTeam)
+    {
+        _currentTeam = currentTeam;
+    }
+
+    private IEnumerator CanMove(int row, int column)
     {
         var team = _board.GetTeam(row, column);
         if (team != Team.None)
         {
-            Debug.Log($"{row}, {column} already has an {team}!");
-            return false;
+            yield return _eventHandler.OnAlreadyTaken(row, column, team);
+            _valid = false;
         }
-
-        if (Check.WhoWon(_board) == Team.None)
+        else if (Check.WhoWon(_board) != Team.None)
         {
-            return true;
+            yield return _eventHandler.OnAlreadyOver();
+            _valid = false;
         }
-        Debug.Log($"Game is already over!");
-        return false;
-
     }
-    
-    private void UpdateSquare(int row, int column)
+
+    private IEnumerator UpdateSquare(int row, int column)
     {
         _board.SetTeam(row, column, _currentTeam);
-        _updateSquare(row, column, _currentTeam);
+        yield return _eventHandler.OnUpdateSquare(row, column, _currentTeam);
     }
-    
-    private bool GameCompleted()
+
+    private IEnumerator GameCompleted()
     {
         var winner = Check.WhoWon(_board);
         if (winner != Team.None)
         {
-            _onWinner();
-            Debug.Log($"Team {winner} has won!");
-            return true;
+            yield return _eventHandler.OnWinner(winner);
         }
-        if (!Check.IsBoardFull(_board))
+        else if (Check.IsBoardFull(_board))
         {
-            return false;
+            yield return _eventHandler.OnTie();
         }
-        _onTie();
-        Debug.Log("Ended in tie!");
-        return true;
-
+        else
+        {
+            _executing = false;
+            PrepareNextTurn();
+        }
     }
 
     private void PrepareNextTurn()
     {
-        _currentTeam = 
+        _currentTeam =
             _currentTeam == Team.O
                 ? Team.X
                 : Team.O;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -22,7 +23,7 @@ public class Bootstrap : MonoBehaviour
     public GameObject horizontal;
     public GameObject vertical;
     public Button playButton;
-    public TMP_Text playButtonText;
+    public TextMeshProUGUI playButtonText;
     public AudioSource placeFX;
     public AudioClip placeSound;
     public AudioClip koSound;
@@ -42,36 +43,34 @@ public class Bootstrap : MonoBehaviour
     private Board _board;
     private Square[,] _squares;
     private Game _ticTacToe;
-    
+    private EventHandler _eventHandler;
+
     private void Start()
     {
         CalculateDimensions();
         
         // Setup Game
+        var sounds = new Sounds(placeSound, koSound, tieSound);
         _board = new Board(boardSize);
+        _squares = new Square[boardSize, boardSize];
+        _eventHandler = new EventHandler(
+            _squares,
+            placeFX,
+            sounds);
         Team firstPlayer = ChooseFirstPlayer();
+        _ticTacToe = new Game(firstPlayer, _board, _eventHandler);
         var playerX = CreatePlayer(playerTypeX, Team.X);
         var playerO = CreatePlayer(playerTypeO, Team.O);
-        _ticTacToe = new Game(firstPlayer, _board, UpdateSquare, OnWinner, OnTie);
+
         // Hookup Player To Board
         // Hookup Boards to Player
-        playerX.PlaceMarker = _ticTacToe.PlaceMarker;
-        playerO.PlaceMarker = _ticTacToe.PlaceMarker;
+        playerX.PlaceMarker = ExecuteMove;
+        playerO.PlaceMarker = ExecuteMove;
         _ticTacToe.HookupPlayers(playerX.OnPlayerTurn,playerO.OnPlayerTurn);
         GenerateVisualBoard();
         
         playButton.onClick.AddListener(StartGame);
         playButtonText.text = "Start Game";
-    }
-
-    private void OnWinner()
-    {
-        placeFX.PlayOneShot(koSound);
-    }
-
-    private void OnTie()
-    {
-        placeFX.PlayOneShot(tieSound);
     }
 
     private void CalculateDimensions()
@@ -86,18 +85,28 @@ public class Bootstrap : MonoBehaviour
 
     private void StartGame()
     {
-        _ticTacToe.SetCurrentTeam(ChooseFirstPlayer());
-        _ticTacToe.TriggerPlayerTurn();
-        // Toggle Start/Stop Game
+        StartCoroutine(OnStartGame());
+    }
+
+    private IEnumerator OnStartGame()
+    {
         playButton.onClick.RemoveListener(StartGame);
+        placeFX.PlayOneShot(startSound);
+        while (placeFX.isPlaying)
+        {
+            yield return null;
+        }
         playButton.onClick.AddListener(StopGame);
         playButtonText.text = "Stop Game";
-        placeFX.PlayOneShot(startSound);
+        _ticTacToe.SetCurrentTeam(ChooseFirstPlayer());
+        _ticTacToe.TriggerPlayerTurn();
     }
 
     private void StopGame()
     {
+        StopAllCoroutines();
         _board.Clear();
+        _ticTacToe.Clear();
         ResetSquares();
         playButton.onClick.RemoveListener(StopGame);
         playButton.onClick.AddListener(StartGame);
@@ -143,8 +152,6 @@ public class Bootstrap : MonoBehaviour
 
     private void GenerateVisualBoard()
     {
-        _squares = new Square[boardSize, boardSize];
-        
         for (var row = 0; row < boardSize; ++row)
         {
             var y = _offset - (_squareSize * row + _lineSize * row) - _halfSquareSize;
@@ -203,13 +210,10 @@ public class Bootstrap : MonoBehaviour
             }
         }
     }
-
-    private void UpdateSquare(int row, int column, Team team)
+    
+    private void ExecuteMove(int row, int column)
     {
-        _squares[row, column].SetTeam(team);
-        placeFX.PlayOneShot(placeSound);
-        // While FX not done yield
-        // Return once Sound/Animation/Whatever is done
+        StartCoroutine(_ticTacToe.PlaceMarker(row, column));
     }
 }
 

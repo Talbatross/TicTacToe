@@ -1,5 +1,4 @@
 ﻿using System;
-using UnityEngine;
 
 public class HumanPlayer : IPlayer
 {
@@ -20,7 +19,6 @@ public class HumanPlayer : IPlayer
         {
             return;
         }
-        Debug.Log($"Attempting to place at {row}, {column}");
         PlaceMarker(row, column);
     }
 }
