@@ -1,5 +1,6 @@
 using System.Collections;
 using NUnit.Framework;
+using TMPro;
 using UnityEngine;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
@@ -34,6 +35,10 @@ namespace PlayModeTests
             squareComponent.x = new Texture2D(5, 5);
             squareComponent.teamImage = rawImageGo.GetComponent<RawImage>();
             bootstrap.vertical = new GameObject("vert",typeof(RectTransform));
+            var button = new GameObject("button", typeof(Button));
+            bootstrap.playButton = button.GetComponent<Button>();
+            var text = new GameObject("text", typeof(TextMeshProUGUI));
+            bootstrap.playButtonText = text.GetComponent<TextMeshProUGUI>();
             yield return null;
             Assert.That(bootstrap.IsReady(), Is.EqualTo(true));
         }

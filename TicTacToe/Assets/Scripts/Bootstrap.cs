@@ -43,9 +43,6 @@ public class Bootstrap : MonoBehaviour
     private Square[,] _squares;
     private Game _ticTacToe;
     
-    
-    
-
     private void Start()
     {
         CalculateDimensions();
