@@ -3,76 +3,50 @@ using UnityEngine;
 
 public class AIPlayer : IPlayer
 {
-    private readonly Action<int, int> _placeMarker;
-    private Team[,] _board;
     private readonly Team _team;
     private readonly Team _opponent;
     private readonly BestMove _bestMove = new ();
+    private readonly int _boardSize;
+    private readonly Board _board;
+    
+    public Action<int, int> PlaceMarker { get; set; }
 
     public AIPlayer(
-        Action<int, int> placeMarker,
-        Team team)
+        Team team,
+        int boardSize)
     {
-        _placeMarker = placeMarker;
         _team = team;
         _opponent = _team == Team.X
             ? Team.O
             : Team.X;
+        _boardSize = boardSize;
+        _board = new Board(boardSize);
     }
 
-    public void OnPlayerTurn(Team[,] board)
+    public void OnPlayerTurn(IReadOnlyBoard board)
     {
-        _board = board;
-        BestMove nextMove = FindBestMove();
+        _board.Copy(board);
+        var nextMove = FindBestMove();
         Debug.Log($"{_team} goes to Row:{nextMove.Row} Column:{nextMove.Column}");
-        _placeMarker(nextMove.Row, nextMove.Column);
+        PlaceMarker(nextMove.Row, nextMove.Column);
     }
 
-    class BestMove
-    {
-        public int Value { get; private set; } = int.MinValue;
-        public int Row { get; private set; }= -1;
-        public int Column { get; private set; }= -1;
-        
-        public void SetBest(int val, int row, int column)
-        {
-            Value = val;
-            Row = row;
-            Column = column;
-        }
-
-        public void Clear()
-        {
-            Value = int.MinValue;
-            Row = -1;
-            Column = -1;
-        }
-        
-    }
-    
     private BestMove FindBestMove()
     {
         _bestMove.Clear();
-        for (int row = 0; row < 3; ++row)
-        {
-            for (int column = 0; column < 3; ++column)
-            {
-                CheckPosition(row, column);
-            }
-        }
-
+        _board.ForEachSquare(CheckPosition);
         return _bestMove;
     }
 
     private void CheckPosition(int row, int column)
     {
-        if (_board[row, column] != Team.None)
+        if (_board.GetTeam(row, column) != Team.None)
         {
             return;
         }
-        _board[row, column] = _team;
-        int moveVal = GetMiniMax(0, _opponent);
-        _board[row, column] = Team.None;
+        _board.SetTeam(row, column, _team);
+        var moveVal = GetMiniMax(0, _opponent);
+        _board.SetTeam(row, column,Team.None);
         if (moveVal > _bestMove.Value)
         {
             _bestMove.SetBest(moveVal,row,column);
@@ -106,17 +80,17 @@ public class AIPlayer : IPlayer
             minMax = Math.Min;
             nextTeam = _team;
         }
-        for (int row = 0; row < 3; ++row)
+        for (int row = 0; row < _boardSize; ++row)
         {
-            for (int column = 0; column < 3; ++column)
+            for (int column = 0; column < _boardSize; ++column)
             {
-                if (_board[row, column] != Team.None)
+                if (_board.GetTeam(row, column) != Team.None)
                 {
                     continue;
                 }
-                _board[row, column] = currentTeam;
+                _board.SetTeam(row, column, currentTeam);
                 best = minMax(best,GetMiniMax(depth + 1, nextTeam));
-                _board[row, column] = Team.None;
+                _board.SetTeam(row, column, Team.None);
             }
         }
 

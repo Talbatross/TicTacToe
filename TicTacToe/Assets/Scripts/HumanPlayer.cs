@@ -1,18 +1,26 @@
 ﻿using System;
+using UnityEngine;
 
 public class HumanPlayer : IPlayer
 {
-    private readonly Action<int, int> _placeMarker;
-    private Team[,] _board;
-    private Team _team;
+    private IReadOnlyBoard _board;
+    public Action<int, int> PlaceMarker { get; set; }
 
-    public HumanPlayer(Action<int, int> placeMarker, Team team)
+    public Action<Action<int,int>> SubscribeToUI;
+
+    public void OnPlayerTurn(IReadOnlyBoard board)
     {
-        _placeMarker = placeMarker;
-        _team = team;
+        _board = board;
+        SubscribeToUI(SelectSquare);
     }
-    public void OnPlayerTurn(Team[,] board)
+
+    private void SelectSquare(int row, int column)
     {
-        // Do Nothing
+        if (_board.GetTeam(row, column) != Team.None)
+        {
+            return;
+        }
+        Debug.Log($"Attempting to place at {row}, {column}");
+        PlaceMarker(row, column);
     }
 }

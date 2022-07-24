@@ -10,100 +10,121 @@ public enum Team
 
 public interface IPlayer
 {
-    void OnPlayerTurn(Team[,] board);
+    void OnPlayerTurn(IReadOnlyBoard board);
+    Action<int,int> PlaceMarker { get; set; }
 }
 
 public class Game
 {
-    private Team _currentTeam;
-    private Team[,] _board;
-    private IPlayer _playerX;
-    private IPlayer _playerO;
+    private readonly Board _board;
+    private readonly Action<int, int, Team> _updateSquare;
 
-    public Game(Team firstPlayer, PlayerType playerX, PlayerType playerO, int boardSize)
+    private Action<Board> _onPlayerXTurn;
+    private Action<Board> _onPlayerOTurn;
+    private readonly Action _onWinner;
+    private readonly Action _onTie;
+    private Team _currentTeam;
+
+    public Game(
+        Team firstPlayer,
+        Board board,
+        Action<int,int,Team> updateSquare,
+        Action onWinner,
+        Action onTie)
     {
-        _board = CreateBoard(boardSize);
-        _playerX = CreatePlayer(playerX, Team.X);
-        _playerO = CreatePlayer(playerO, Team.O);
+        _board = board;
         _currentTeam = firstPlayer;
+        _updateSquare = updateSquare;
+        _onWinner = onWinner;
+        _onTie = onTie;
+    }
+
+    public void SetCurrentTeam(Team currentTeam)
+    {
+        _currentTeam = currentTeam;
+    }
+
+    public void HookupPlayers(Action<Board> onXTurn, Action<Board> onOTurn)
+    {
+        _onPlayerXTurn = onXTurn;
+        _onPlayerOTurn = onOTurn;
+    }
+
+    public void TriggerPlayerTurn()
+    {
         if (_currentTeam == Team.O)
         {
-            _playerO.OnPlayerTurn(_board);
+            _onPlayerOTurn(_board);
         }
         else
         {
-            _playerX.OnPlayerTurn(_board);
+            _onPlayerXTurn(_board);
         }
     }
     
     public void PlaceMarker(int row, int column)
     {
-        var team = _board[row, column]; 
-        // Make sure Row/Column is Good
+        if (CanMove(row,column) == false)
+        {
+            return;
+        }
+        UpdateSquare(row,column);
+        if (GameCompleted())
+        {
+            return;
+        }
+        PrepareNextTurn();
+    }
+    
+    private bool CanMove(int row, int column)
+    {
+        var team = _board.GetTeam(row, column);
         if (team != Team.None)
         {
-            // Maybe make this an event message instead
-            throw new ArgumentException($"{row}, {column} already has an {team}!");
+            Debug.Log($"{row}, {column} already has an {team}!");
+            return false;
         }
-        if (Check.WhoWon(_board) != Team.None)
+
+        if (Check.WhoWon(_board) == Team.None)
         {
-            throw new ArgumentException($"Game is already over!");
+            return true;
         }
-        // Place Marker on Board
-        _board[row, column] = _currentTeam;
-        // Check For Victory
-        Team winner = Check.WhoWon(_board);
+        Debug.Log($"Game is already over!");
+        return false;
+
+    }
+    
+    private void UpdateSquare(int row, int column)
+    {
+        _board.SetTeam(row, column, _currentTeam);
+        _updateSquare(row, column, _currentTeam);
+    }
+    
+    private bool GameCompleted()
+    {
+        var winner = Check.WhoWon(_board);
         if (winner != Team.None)
         {
+            _onWinner();
             Debug.Log($"Team {winner} has won!");
-            return;
+            return true;
         }
-        // Check for Tie
-        if (Check.IsBoardFull(_board))
+        if (!Check.IsBoardFull(_board))
         {
-            Debug.Log("Ended in tie!");
-            return;
+            return false;
         }
-        // Switch Teams if not victory
+        _onTie();
+        Debug.Log("Ended in tie!");
+        return true;
+
+    }
+
+    private void PrepareNextTurn()
+    {
         _currentTeam = 
             _currentTeam == Team.O
                 ? Team.X
                 : Team.O;
-        
-        // Indicate Board update for Player
-        if (_currentTeam == Team.O)
-        {
-            _playerO.OnPlayerTurn(_board);
-        }
-        else
-        {
-            _playerX.OnPlayerTurn(_board);
-        }
-    }
-
-    public Team[,] GetBoard()
-    {
-        return _board;
-    }
-
-    private IPlayer CreatePlayer(PlayerType type, Team team)
-    {
-        return type == PlayerType.Human ? new HumanPlayer(PlaceMarker, team) :
-            type == PlayerType.AI ? new AIPlayer(PlaceMarker, team) :
-            throw new ArgumentOutOfRangeException(nameof(type));
-    }
-
-    private Team[,] CreateBoard(int boardSize)
-    {
-        var board = new Team[boardSize, boardSize];
-        for (int row = 0; row < boardSize; ++row)
-        {
-            for (int column = 0; column < boardSize; ++column)
-            {
-                board[row, column] = Team.None;
-            }
-        }
-
-        return board;
+        TriggerPlayerTurn();
     }
 }

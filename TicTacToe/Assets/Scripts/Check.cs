@@ -1,14 +1,17 @@
 ﻿public static class Check
 {
-    private static Team[,] _board;
-    
-    public static bool IsBoardFull(Team[,] board)
+    private static IReadOnlyBoard _board;
+    private static int _boardSize;
+
+    public static bool IsBoardFull(IReadOnlyBoard board)
     {
-        for (int row = 0; row < 3; ++row)
+        _board = board;
+        _boardSize = _board.GetSize();
+        for (int row = 0; row < _boardSize; ++row)
         {
-            for (int column = 0; column < 3; ++column)
+            for (int column = 0; column < _boardSize; ++column)
             {
-                if (board[row,column] == Team.None)
+                if (board.GetTeam(row,column) == Team.None)
                 {
                     return false;
                 }
@@ -17,9 +20,10 @@
         return true;
     }
     
-    public static Team WhoWon(Team[,] board)
+    public static Team WhoWon(IReadOnlyBoard board)
     {
         _board = board;
+        _boardSize = _board.GetSize();
         var winner = WhoWonRows();
         if (winner != Team.None)
         {
@@ -33,7 +37,7 @@
 
     private static Team WhoWonRows()
     {
-        for (int row = 0; row < 3; ++row)
+        for (int row = 0; row < _boardSize; ++row)
         {
             Team winner = WhoWonRow(row);
             if (winner != Team.None)
@@ -47,10 +51,10 @@
         
     private static Team WhoWonRow(int row)
     {
-        Team winner = _board[row, 0];
-        for (int currentColumn = 1; currentColumn < 3; ++currentColumn)
+        var winner = _board.GetTeam(row, 0);
+        for (int currentColumn = 1; currentColumn < _boardSize; ++currentColumn)
         {
-            if (_board[row,currentColumn] != winner)
+            if (_board.GetTeam(row,currentColumn) != winner)
             {
                 return Team.None;
             }
@@ -60,7 +64,7 @@
 
     private static Team WhoWonColumns()
     {
-        for (int column = 0; column < 3; ++column)
+        for (int column = 0; column < _boardSize; ++column)
         {
             Team winner = WhoWonColumn(column);
             if (winner != Team.None)
@@ -73,10 +77,10 @@
         
     private static Team WhoWonColumn(int column)
     {
-        Team winner = _board[0, column];
-        for (int currentRow = 1; currentRow < 3; ++currentRow)
+        var winner = _board.GetTeam(0, column);
+        for (int currentRow = 1; currentRow < _boardSize; ++currentRow)
         {
-            if (_board[currentRow,column] != winner)
+            if (_board.GetTeam(currentRow,column) != winner)
             {
                 return Team.None;
             }
@@ -86,7 +90,7 @@
         
     private static Team WhoWonDiagonals()
     {
-        Team winner = WhoWonTopLeftDiagonal();
+        var winner = WhoWonTopLeftDiagonal();
         return winner != Team.None
             ? winner
             : WhoWonBottomLeftDiagonal();
@@ -94,10 +98,10 @@
 
     private static Team WhoWonTopLeftDiagonal()
     {
-        Team winner = _board[0, 0];
-        for (int row = 1, column = 1; row < 3; ++row, ++column)
+        var winner = _board.GetTeam(0,0);
+        for (int row = 1, column = 1; row < _boardSize; ++row, ++column)
         {
-            if (_board[row, column] != winner)
+            if (_board.GetTeam(row, column) != winner)
             {
                 return Team.None;
             }
@@ -107,10 +111,10 @@
 
     private static Team WhoWonBottomLeftDiagonal()
     {
-        Team winner = _board[2, 0];
-        for (int row = 1, column = 1; column < 3; --row, ++column)
+        var winner = _board.GetTeam(2, 0);
+        for (int row = 1, column = 1; column < _boardSize; --row, ++column)
         {
-            if (_board[row, column] != winner)
+            if (_board.GetTeam(row, column) != winner)
             {
                 return Team.None;
             }
