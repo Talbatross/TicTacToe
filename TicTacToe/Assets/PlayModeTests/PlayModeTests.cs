@@ -1,5 +1,6 @@
 using System.Collections;
 using NUnit.Framework;
+using TicTacToe;
 using TMPro;
 using UnityEngine;
 using UnityEngine.TestTools;

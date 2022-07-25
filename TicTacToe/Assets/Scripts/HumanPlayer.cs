@@ -1,24 +1,26 @@
 ﻿using System;
 
-public class HumanPlayer : IPlayer
+namespace TicTacToe
 {
-    private IReadOnlyBoard _board;
-    public Action<int, int> PlaceMarker { get; set; }
-
-    public Action<Action<int,int>> SubscribeToUI;
-
-    public void OnPlayerTurn(IReadOnlyBoard board)
+    public class HumanPlayer : IPlayer
     {
-        _board = board;
-        SubscribeToUI(SelectSquare);
-    }
+        private IReadOnlyBoard _board;
+        public Action<int, int> PlaceMarker { get; set; }
 
-    private void SelectSquare(int row, int column)
-    {
-        if (_board.GetTeam(row, column) != Team.None)
+        public Action<Action<int,int>> SubscribeToUI;
+
+        public void OnPlayerTurn(IReadOnlyBoard board)
         {
-            return;
+            _board = board;
+            SubscribeToUI(SelectSquare);
         }
-        PlaceMarker(row, column);
+
+        private void SelectSquare(int row, int column)
+        {
+            if (_board.GetTeam(row, column) == Team.None)
+            {
+                PlaceMarker(row, column);
+            }
+        }
     }
 }

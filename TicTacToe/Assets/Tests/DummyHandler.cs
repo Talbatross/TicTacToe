@@ -1,9 +1,10 @@
 ﻿using System.Collections;
+using TicTacToe;
 using UnityEngine;
 
 namespace Tests
 {
-    public class DummyHandler : IEventHandler
+    internal class DummyHandler : IEventHandler
     {
         public IEnumerator OnUpdateSquare(int row, int column, Team team)
         {

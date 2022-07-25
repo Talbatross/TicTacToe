@@ -1,29 +1,19 @@
+using System;
 using System.Collections;
 using NUnit.Framework;
+using TicTacToe;
 using UnityEngine.TestTools;
 
 namespace Tests
 {
-    public class NewTestScript
+    public class TicTacToeTests
     {
         [UnityTest]
         public IEnumerator TestXWins()
         {
             var board = new Board(3);
-            var game = new Game(
-                Team.X,
-                board,
-                new DummyHandler());
-            var playerX = new HumanPlayer();
-            var playerO = new HumanPlayer();
-            playerX.SubscribeToUI = _ => { };
-            playerO.SubscribeToUI = _ => { };
-            game.HookupPlayers(playerX.OnPlayerTurn, playerO.OnPlayerTurn);
-            yield return game.PlaceMarker(0, 0);
-            yield return game.PlaceMarker(1, 0);
-            yield return game.PlaceMarker(1, 1);
-            yield return game.PlaceMarker(1, 2);
-            yield return game.PlaceMarker(2, 2);
+            var tester = new HumanTester(board);
+            yield return tester.PlayGame();
             Assert.That(Check.WhoWon(board), Is.EqualTo(Team.X));
         }
 
@@ -32,22 +22,9 @@ namespace Tests
         {
             var boardSize = 3;
             var board = new Board(boardSize);
-            var ticTacToe = new Game(
-                Team.O,
-                board,
-                new DummyHandler());
-            AIPlayer ai1 = new AIPlayer(Team.X, boardSize);
-            AIPlayer ai2 = new AIPlayer(Team.O, boardSize);
-            ticTacToe.HookupPlayers(ai1.OnPlayerTurn, ai2.OnPlayerTurn);
-            ai1.PlaceMarker = UpdateSquare;
-            ai2.PlaceMarker = UpdateSquare;
-            ticTacToe.TriggerPlayerTurn();
+            var bootstrap = new AITester(board);
+            yield return bootstrap.PlayGame();
             Assert.That(Check.IsBoardFull(board), Is.True);
-        }
-        
-        private void UpdateSquare(int row, int column)
-        {
-            
         }
 
         [UnityTest]
@@ -115,6 +92,26 @@ namespace Tests
             yield return ticTacToe.PlaceMarker(1, 1);
             yield return ticTacToe.PlaceMarker(2, 0);
             Assert.That(Check.WhoWon(standard.Board), Is.EqualTo(Team.O));
+        }
+
+        [Test]
+        public void TestBoardClear()
+        {
+            var board = new Board(3);
+            board.SetTeam(0,0,Team.X);
+            board.Clear();
+            Assert.That(board.GetTeam(0,0), Is.EqualTo(Team.None));
+        }
+
+        [Test]
+        public void TestBadBoardCopy()
+        {
+            var board1 = new Board(3);
+            var board2 = new Board(4);
+            Assert.Throws<ArgumentException>(() =>
+            {
+                board1.Copy(board2);
+            });
         }
 
         private class DefaultGame
