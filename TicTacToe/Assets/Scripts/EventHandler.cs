@@ -5,20 +5,20 @@ namespace TicTacToe
 {
     public class EventHandler : IEventHandler
     {
-        private readonly Square[,] _squares;
+        private readonly SquareUI _squareUI;
         private readonly AudioSource _audio;
         private readonly Sounds _sounds;
     
-        public EventHandler(Square[,] squares, AudioSource audio, Sounds sounds)
+        public EventHandler(SquareUI squares, AudioSource audio, Sounds sounds)
         {
-            _squares = squares;
+            _squareUI = squares;
             _audio = audio;
             _sounds = sounds;
         }
         
         public IEnumerator OnUpdateSquare(int row, int column, Team team)
         {
-            _squares[row, column].SetTeam(team);
+            _squareUI.GetSquare(row, column).SetTeam(team);
             _audio.PlayOneShot(_sounds.PlaceSound);
             while (_audio.isPlaying)
             {

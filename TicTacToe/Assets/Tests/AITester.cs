@@ -19,13 +19,12 @@ namespace Tests
             _game = new Game(
                 Team.O,
                 board,
-                this);
+                this,
+                OnNextPlayerTurn,
+                OnNextPlayerTurn);
             _board = board;
-            _ai1 = new AIPlayer(Team.X, board.GetSize()); 
-            _ai2 = new AIPlayer(Team.O, board.GetSize());
-            _game.HookupPlayers(OnNextPlayerTurn, OnNextPlayerTurn);
-            _ai1.PlaceMarker = PlaceMarker;
-            _ai2.PlaceMarker = PlaceMarker;
+            _ai1 = new AIPlayer(PlaceMarker, Team.X, board.GetSize()); 
+            _ai2 = new AIPlayer(PlaceMarker, Team.O, board.GetSize());
         }
 
         public IEnumerator PlayGame()

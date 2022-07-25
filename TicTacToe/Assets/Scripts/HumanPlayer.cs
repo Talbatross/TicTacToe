@@ -5,21 +5,26 @@ namespace TicTacToe
     public class HumanPlayer : IPlayer
     {
         private IReadOnlyBoard _board;
-        public Action<int, int> PlaceMarker { get; set; }
+        private readonly Action<int, int> _placeMarker;
+        private readonly Action<Action<int, int>> _subscribeToUI;
 
-        public Action<Action<int,int>> SubscribeToUI;
+        public HumanPlayer(Action<int, int> placeMarker, Action<Action<int, int>> subscribeToUI)
+        {
+            _placeMarker = placeMarker;
+            _subscribeToUI = subscribeToUI;
+        }
 
         public void OnPlayerTurn(IReadOnlyBoard board)
         {
             _board = board;
-            SubscribeToUI(SelectSquare);
+            _subscribeToUI(SelectSquare);
         }
 
         private void SelectSquare(int row, int column)
         {
             if (_board.GetTeam(row, column) == Team.None)
             {
-                PlaceMarker(row, column);
+                _placeMarker(row, column);
             }
         }
     }

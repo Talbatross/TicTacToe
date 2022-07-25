@@ -6,22 +6,26 @@ namespace TicTacToe
     public class Game
     {
         private readonly Board _board;
-        private Action<Board> _onPlayerXTurn;
-        private Action<Board> _onPlayerOTurn;
-        private Team _currentTeam;
+        private readonly Action<Board> _onPlayerXTurn;
+        private readonly Action<Board> _onPlayerOTurn;
         private readonly IEventHandler _eventHandler;
+        
+        private Team _currentTeam;
         private bool _valid = true;
         private bool _executing;
-
-
+        
         public Game(
             Team firstPlayer,
             Board board,
-            IEventHandler eventHandler)
+            IEventHandler eventHandler,
+            Action<Board> onPlayerXTurn,
+            Action<Board> onPlayerOTurn)
         {
             _board = board;
             _currentTeam = firstPlayer;
             _eventHandler = eventHandler;
+            _onPlayerXTurn = onPlayerXTurn;
+            _onPlayerOTurn = onPlayerOTurn;
         }
 
         public void Clear()
@@ -60,12 +64,6 @@ namespace TicTacToe
             yield return GameCompleted();
         }
 
-        public void HookupPlayers(Action<Board> onXTurn, Action<Board> onOTurn)
-        {
-            _onPlayerXTurn = onXTurn;
-            _onPlayerOTurn = onOTurn;
-        }
-    
         public void SetCurrentTeam(Team currentTeam)
         {
             _currentTeam = currentTeam;

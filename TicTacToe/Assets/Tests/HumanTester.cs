@@ -19,15 +19,12 @@ namespace Tests
             _game = new Game(
                 Team.X,
                 board,
-                this);
+                this,
+                OnNextPlayerTurn,
+                OnNextPlayerTurn);
             _board = board;
-            _x = new HumanPlayer(); 
-            _o = new HumanPlayer();
-            _game.HookupPlayers(OnNextPlayerTurn, OnNextPlayerTurn);
-            _x.PlaceMarker = PlaceMarker;
-            _o.PlaceMarker = PlaceMarker;
-            _x.SubscribeToUI = SubscribeToUI;
-            _o.SubscribeToUI = SubscribeToUI;
+            _x = new HumanPlayer(PlaceMarker, SubscribeToUI); 
+            _o = new HumanPlayer(PlaceMarker, SubscribeToUI);
         }
         
         public IEnumerator PlayGame()

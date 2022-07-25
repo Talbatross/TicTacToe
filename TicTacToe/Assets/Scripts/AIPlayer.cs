@@ -10,13 +10,14 @@ namespace TicTacToe
         private readonly BestMove _bestMove = new ();
         private readonly int _boardSize;
         private readonly Board _board;
-        
-        public Action<int, int> PlaceMarker { get; set; }
+        private readonly Action<int, int> _placeMarker;
 
         public AIPlayer(
+            Action<int,int> placeMarker,
             Team team,
             int boardSize)
         {
+            _placeMarker = placeMarker;
             _team = team;
             _opponent = _team == Team.X
                 ? Team.O
@@ -30,7 +31,7 @@ namespace TicTacToe
             _board.Copy(board);
             var nextMove = FindBestMove();
             Debug.Log($"{_team} goes to Row:{nextMove.Row} Column:{nextMove.Column}");
-            PlaceMarker(nextMove.Row, nextMove.Column);
+            _placeMarker(nextMove.Row, nextMove.Column);
         }
 
         private BestMove FindBestMove()

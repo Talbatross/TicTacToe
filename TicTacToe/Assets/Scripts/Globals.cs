@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 namespace TicTacToe
@@ -14,7 +13,6 @@ namespace TicTacToe
     public interface IPlayer
     {
         void OnPlayerTurn(IReadOnlyBoard board);
-        Action<int,int> PlaceMarker { get; set; }
     }
 
     public interface IEventHandler

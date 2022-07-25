@@ -1,31 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CoverageReport scope="Summary">
   <Summary>
-    <Generatedon>7/24/2022 - 10:47:24 PM</Generatedon>
-    <Parser>OpenCoverParser</Parser>
+    <Generatedon>7/24/2022 - 11:41:00 PM</Generatedon>
+    <Parser>MultiReportParser (2x OpenCoverParser)</Parser>
     <Assemblies>1</Assemblies>
-    <Classes>10</Classes>
-    <Files>10</Files>
-    <Coveredlines>143</Coveredlines>
-    <Uncoveredlines>363</Uncoveredlines>
-    <Coverablelines>506</Coverablelines>
-    <Totallines>843</Totallines>
-    <Linecoverage>28.2</Linecoverage>
+    <Classes>12</Classes>
+    <Files>12</Files>
+    <Coveredlines>428</Coveredlines>
+    <Uncoveredlines>110</Uncoveredlines>
+    <Coverablelines>538</Coverablelines>
+    <Totallines>951</Totallines>
+    <Linecoverage>79.5</Linecoverage>
     <Coveredbranches>0</Coveredbranches>
     <Totalbranches>0</Totalbranches>
   </Summary>
   <Coverage>
-    <Assembly name="TicTacToe" classes="10" coverage="28.2" coveredlines="143" coverablelines="506" totallines="843" branchcoverage="" coveredbranches="0" totalbranches="0">
-      <Class name="AIPlayer" coverage="13.6" coveredlines="9" coverablelines="66" totallines="99" branchcoverage="" coveredbranches="0" totalbranches="0" />
-      <Class name="BestMove" coverage="23" coveredlines="3" coverablelines="13" totallines="21" branchcoverage="" coveredbranches="0" totalbranches="0" />
-      <Class name="Board" coverage="25" coveredlines="12" coverablelines="48" totallines="76" branchcoverage="" coveredbranches="0" totalbranches="0" />
-      <Class name="Bootstrap" coverage="66.1" coveredlines="88" coverablelines="133" totallines="219" branchcoverage="" coveredbranches="0" totalbranches="0" />
-      <Class name="Check" coverage="0" coveredlines="0" coverablelines="88" totallines="124" branchcoverage="" coveredbranches="0" totalbranches="0" />
-      <Class name="EventHandler" coverage="16.6" coveredlines="6" coverablelines="36" totallines="58" branchcoverage="" coveredbranches="0" totalbranches="0" />
-      <Class name="Game" coverage="14.4" coveredlines="11" coverablelines="76" totallines="119" branchcoverage="" coveredbranches="0" totalbranches="0" />
-      <Class name="HumanPlayer" coverage="9" coveredlines="1" coverablelines="11" totallines="23" branchcoverage="" coveredbranches="0" totalbranches="0" />
-      <Class name="Sounds" coverage="100" coveredlines="6" coverablelines="6" totallines="42" branchcoverage="" coveredbranches="0" totalbranches="0" />
-      <Class name="Square" coverage="24.1" coveredlines="7" coverablelines="29" totallines="62" branchcoverage="" coveredbranches="0" totalbranches="0" />
+    <Assembly name="TicTacToe" classes="12" coverage="79.5" coveredlines="428" coverablelines="538" totallines="951" branchcoverage="" coveredbranches="0" totalbranches="0">
+      <Class name="BestMove" coverage="100" coveredlines="13" coverablelines="13" totallines="21" branchcoverage="" coveredbranches="0" totalbranches="0" />
+      <Class name="TicTacToe.AIPlayer" coverage="100" coveredlines="66" coverablelines="66" totallines="102" branchcoverage="" coveredbranches="0" totalbranches="0" />
+      <Class name="TicTacToe.Board" coverage="100" coveredlines="48" coverablelines="48" totallines="79" branchcoverage="" coveredbranches="0" totalbranches="0" />
+      <Class name="TicTacToe.Bootstrap" coverage="59.7" coveredlines="40" coverablelines="67" totallines="140" branchcoverage="" coveredbranches="0" totalbranches="0" />
+      <Class name="TicTacToe.Check" coverage="100" coveredlines="88" coverablelines="88" totallines="127" branchcoverage="" coveredbranches="0" totalbranches="0" />
+      <Class name="TicTacToe.EventHandler" coverage="16.6" coveredlines="6" coverablelines="36" totallines="61" branchcoverage="" coveredbranches="0" totalbranches="0" />
+      <Class name="TicTacToe.Game" coverage="86.8" coveredlines="66" coverablelines="76" totallines="122" branchcoverage="" coveredbranches="0" totalbranches="0" />
+      <Class name="TicTacToe.HumanPlayer" coverage="100" coveredlines="11" coverablelines="11" totallines="26" branchcoverage="" coveredbranches="0" totalbranches="0" />
+      <Class name="TicTacToe.Sounds" coverage="100" coveredlines="6" coverablelines="6" totallines="46" branchcoverage="" coveredbranches="0" totalbranches="0" />
+      <Class name="TicTacToe.Square" coverage="24.1" coveredlines="7" coverablelines="29" totallines="65" branchcoverage="" coveredbranches="0" totalbranches="0" />
+      <Class name="TicTacToe.SquareUI" coverage="22.2" coveredlines="6" coverablelines="27" totallines="49" branchcoverage="" coveredbranches="0" totalbranches="0" />
+      <Class name="TicTacToe.SquareUIBuilder" coverage="100" coveredlines="71" coverablelines="71" totallines="113" branchcoverage="" coveredbranches="0" totalbranches="0" />
     </Assembly>
   </Coverage>
 </CoverageReport>

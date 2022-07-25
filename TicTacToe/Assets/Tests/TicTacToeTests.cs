@@ -125,12 +125,13 @@ namespace Tests
                 Game = new Game(
                     Team.O,
                     Board,
-                    new DummyHandler());
-                var playerX = new HumanPlayer();
-                var playerO = new HumanPlayer();
-                Game.HookupPlayers(playerX.OnPlayerTurn, playerO.OnPlayerTurn);
-                playerX.SubscribeToUI = _ => { };
-                playerO.SubscribeToUI = _ => { };
+                    new DummyHandler(),
+                    OnPlayerTurn,
+                    OnPlayerTurn);
+            }
+
+            private void OnPlayerTurn(Board obj)
+            {
             }
         }
     }
