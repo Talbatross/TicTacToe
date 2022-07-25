@@ -113,7 +113,7 @@
 
         private static Team WhoWonBottomLeftDiagonal()
         {
-            var winner = _board.GetTeam(2, 0);
+            var winner = _board.GetTeam(_boardSize - 1, 0);
             for (int row = 1, column = 1; column < _boardSize; --row, ++column)
             {
                 if (_board.GetTeam(row, column) != winner)
